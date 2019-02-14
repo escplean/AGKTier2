@@ -2328,6 +2328,10 @@ uString& uString::ReplaceStr( const char* find, const char *replace, int qty )
 				}
 				else
 				{
+					//PE: if shift == 0 at this point we generate a endless loop.
+					if (shift <= 0)
+						shift=1;
+
 					for ( int i = 0; i < shift; i++ ) 
 					{
 						*str2 = *str;
