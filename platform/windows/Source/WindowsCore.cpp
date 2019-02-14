@@ -9588,7 +9588,6 @@ UINT agk::GetAppRunning( UINT appID )
 void agk::TerminateApp( UINT appID )
 //****
 {
-	HANDLE hProc = OpenProcess( 0, TRUE, appID );
 	HANDLE hProc = OpenProcess(PROCESS_TERMINATE, TRUE, appID); //PE: Dont work without PROCESS_TERMINATE access.
 	if ( !hProc ) return;
 
