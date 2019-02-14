@@ -36216,6 +36216,24 @@ void agk::CreateZip( UINT zipID, const char* filename )
 	m_cZipFileList.AddItem( pZipFile, zipID );
 }
 
+void agk::CreateZip(UINT zipID, const char* filename,int append)
+//****
+{
+	if (m_cZipFileList.GetItem(zipID))
+	{
+#ifdef _AGK_ERROR_CHECK
+		uString errStr("Failed to create zip file ");
+		errStr.AppendUInt(zipID).Append(" - ID already exists");
+		Error(errStr);
+#endif
+		return;
+	}
+
+	ZipFile *pZipFile = new ZipFile();
+	pZipFile->CreateAppend(filename, append);
+	m_cZipFileList.AddItem(pZipFile, zipID);
+}
+
 //****f* File/Zip/CreateZip
 // FUNCTION
 //   Creates a zip file at the specified location and opens it ready for files to be added. Files cannot be read or extracted
