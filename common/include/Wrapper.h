@@ -2638,6 +2638,7 @@ namespace AGK
 
 			// zip functions
 			static void CreateZip( UINT zipID, const char* filename );
+			static void CreateZip(UINT zipID, const char* filename, int append);
 			static UINT CreateZip( const char* filename );
 			static void AddZipEntry( UINT zipID, const char* path, const char* zipPath );
 			static void CloseZip( UINT zipID );
