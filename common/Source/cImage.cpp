@@ -7,6 +7,13 @@
 #include "png.h"
 #include "jpeglib.h"
 
+#define INCLUDEBMPSUPPORT
+
+#ifdef INCLUDEBMPSUPPORT
+#define LOADBMP_IMPLEMENTATION
+#include "../singleheaders/loadbmp.h"
+#endif
+
 #if !defined(AGK_BLACKBERRY) && !defined(AGK_HTML5)
 	#ifdef AGK_IOS
 		#include "QRCodeReader.h"
@@ -1814,6 +1821,36 @@ bool cImage::Load( const char* szFile, bool bBlackToAlpha )
 			return LoadPNGFromMemory( libImageMissingPNG, 0, 0 );
 		}
 	}
+#ifdef INCLUDEBMPSUPPORT
+	else if (ext.CompareTo("bmp") == 0)
+	{
+		if (strncmp(szFile, "raw:", 4) == 0) {
+			szFile += 4;
+		}
+		int err = loadbmp_decode_file(szFile, &pData, &out_width, &out_height, LOADBMP_RGBA);
+		if ( err )
+		{
+			if (pData) delete[] pData;
+			pData = 0;
+#ifdef _AGK_ERROR_CHECK
+			uString errStr;
+			errStr.Format("Failed to load bmp %u", err);
+//			uString errStr("Failed to load bmp ", 200);
+//			errStr.Append(szFile);
+//			errStr.Append(" - no free image IDs found");
+			agk::Error(errStr);
+#endif
+			if (m_iNoMissingImage)
+			{
+				m_iNoMissingImage = 0;
+				return false;
+			}
+
+			m_iSpecialLoadMode = 0;
+			return LoadPNGFromMemory(libImageMissingPNG, 0, 0);
+		}
+	}
+#endif
 	else
 	{
 		// platform specific image load
